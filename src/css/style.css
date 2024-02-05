@@ -46,6 +46,10 @@
 }
 
 .list__item {
+    display: flex;
+    min-height: 40px;
+    justify-content: space-between;
+    align-items: center;
     background-color: #fefefe;
     border-radius: 3px;
     padding: 10px;
@@ -145,4 +149,10 @@
     color: white;
     border-radius: 3px;
     font-size: 14px;
+}
+
+.cross-btn {
+    width: 18px;
+    height: 18px;
+    display: none;
 }

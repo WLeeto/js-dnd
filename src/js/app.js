@@ -1,3 +1,5 @@
+import crossImg from '../img/cross.png'
+
 const lists = document.querySelectorAll(".list");
 
 const btn = document.querySelector(".add__btn");
@@ -39,10 +41,15 @@ function addTask() {
   addBtn.addEventListener("click", () => {
     console.log("!!!");
     const newItem = document.createElement("div");
+    const newCross = document.createElement("img")
+    newCross.src = crossImg
+    newCross.classList.add("cross-btn")
     newItem.classList.add("list__item");
+    
     newItem.draggable = true;
     newItem.textContent = value;
     lists[0].append(newItem);
+    newItem.appendChild(newCross)
 
     textarea.value = "";
     value = "";
@@ -87,6 +94,21 @@ function dragNdrop() {
   for (let i = 0; i < listItems.length; i++) {
     const item = listItems[i];
 
+    item.addEventListener('mouseover', function() {
+      const cross = item.querySelector('img')
+      cross.style.display = 'block'
+      cross.addEventListener('click', () => {
+        item.remove()
+      })
+    })
+
+    item.addEventListener('mouseout', function() {
+      const cross = item.querySelector('img')
+      cross.style.display = 'none'
+      cross.removeEventListener('click', () => {
+      })
+    })
+
     item.addEventListener("dragstart", () => {
       draggetItem = item;
       setTimeout(() => {
@@ -96,7 +118,7 @@ function dragNdrop() {
 
     item.addEventListener("dragend", () => {
       setTimeout(() => {
-        item.style.display = "block";
+        item.style.display = "flex";
       }, 0);
       draggetItem = null;
     });
@@ -105,7 +127,7 @@ function dragNdrop() {
       item.remove();
     });
 
-    for (j = 0; j < lists.length; j++) {
+    for (let j = 0; j < lists.length; j++) {
       const list = lists[j];
       list.addEventListener("dragover", (e) => e.preventDefault());
 
