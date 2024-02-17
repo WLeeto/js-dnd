@@ -39,7 +39,6 @@ function addTask() {
   });
 
   addBtn.addEventListener("click", () => {
-    console.log("!!!");
     const newItem = document.createElement("div");
     const newCross = document.createElement("img")
     newCross.src = crossImg
@@ -87,6 +86,29 @@ changeTitle();
 
 let draggetItem = null;
 
+
+function getElementAfterCursor(x, y, list) {
+  for(let el of list.children) {
+    if(el.offsetTop / 2 > y) {
+        return el;
+    } 
+  }
+  return null;
+}
+
+
+function createPlaceholder() {
+
+  const placeholder = document.createElement('div');  
+
+  placeholder.style.height = '40px';
+  placeholder.style.border = '1px dashed grey';
+
+  return placeholder;
+}
+
+let placeholder = undefined
+
 function dragNdrop() {
   const listItems = document.querySelectorAll(".list__item");
   const lists = document.querySelectorAll(".list");
@@ -129,7 +151,29 @@ function dragNdrop() {
 
     for (let j = 0; j < lists.length; j++) {
       const list = lists[j];
-      list.addEventListener("dragover", (e) => e.preventDefault());
+
+      
+
+      list.addEventListener("dragover", (e) => {
+        e.preventDefault()
+
+        const x = e.clientX - list.getBoundingClientRect().left;
+        const y = e.clientY - list.getBoundingClientRect().top;
+        
+        const afterEl = getElementAfterCursor(x, y, list)
+
+        if(afterEl) {
+          if(!placeholder) {
+             placeholder = createPlaceholder();
+             list.insertBefore(placeholder, afterEl);
+          } else {
+             list.insertBefore(placeholder, afterEl);
+          }
+       } else {
+          list.append(placeholder);
+       }
+
+      });
 
       list.addEventListener("dragenter", function (e) {
         e.preventDefault();
@@ -145,6 +189,9 @@ function dragNdrop() {
         e.preventDefault();
         this.style.backgroundColor = "rgba(0,0,0,0)";
         this.append(draggetItem);
+        if (placeholder) {
+          placeholder.remove()
+        }
       });
     }
   }
