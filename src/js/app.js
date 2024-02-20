@@ -107,11 +107,12 @@ function createPlaceholder() {
   return placeholder;
 }
 
-let placeholder = undefined
+let placeholder = null
+placeholder = createPlaceholder();
 
 function dragNdrop() {
-  const listItems = document.querySelectorAll(".list__item");
-  const lists = document.querySelectorAll(".list");
+const listItems = document.querySelectorAll(".list__item");
+const lists = document.querySelectorAll(".list");
 
   for (let i = 0; i < listItems.length; i++) {
     const item = listItems[i];
@@ -152,8 +153,6 @@ function dragNdrop() {
     for (let j = 0; j < lists.length; j++) {
       const list = lists[j];
 
-      
-
       list.addEventListener("dragover", (e) => {
         e.preventDefault()
 
@@ -164,7 +163,6 @@ function dragNdrop() {
 
         if(afterEl) {
           if(!placeholder) {
-             placeholder = createPlaceholder();
              list.insertBefore(placeholder, afterEl);
           } else {
              list.insertBefore(placeholder, afterEl);
@@ -183,18 +181,46 @@ function dragNdrop() {
       list.addEventListener("dragleave", function (e) {
         e.preventDefault();
         this.style.backgroundColor = "rgba(0,0,0,0)";
+        // if (placeholder) {
+        //   placeholder.remove()
+        // }
       });
 
       list.addEventListener("drop", function (e) {
         e.preventDefault();
         this.style.backgroundColor = "rgba(0,0,0,0)";
-        this.append(draggetItem);
+
+        const x = e.clientX - list.getBoundingClientRect().left;
+        const y = e.clientY - list.getBoundingClientRect().top;
+        
+        const afterEl = getElementAfterCursor(x, y, list)
+        if(afterEl) {
+          if(!placeholder) {
+             list.insertBefore(draggetItem, afterEl);
+          } else {
+             list.insertBefore(draggetItem, afterEl);
+          }
+       } else {
+          list.append(draggetItem);
+       }
+
+        // this.append(draggetItem);
         if (placeholder) {
           placeholder.remove()
         }
       });
+
+      const mainContainer = document.querySelector('.boards')
+      mainContainer.addEventListener('drop', function(e) {
+        if (placeholder) {
+          placeholder.remove()
+        }
+      })
     }
   }
 }
+
+
+
 
 dragNdrop();
